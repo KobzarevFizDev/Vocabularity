@@ -1,0 +1,71 @@
+.container {
+    position: fixed;
+    bottom: 80px;
+    left: 24px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    z-index: 100;
+}
+
+.toggle {
+    width: 44px;
+    height: 44px;
+    border: none;
+    border-radius: 50%;
+    background: #2ecc71;
+    color: #0a0a0a;
+    font-size: 22px;
+    font-weight: 300;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s, background 0.2s;
+    line-height: 1;
+}
+
+.toggle:hover {
+    background: #27ae60;
+    transform: scale(1.08);
+}
+
+.open .toggle {
+    background: #333;
+    color: #999;
+}
+
+.open .toggle:hover {
+    background: #444;
+    color: #e0e0e0;
+}
+
+.options {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.option {
+    width: 92px;
+    height: 36px;
+    border: 1px solid #333;
+    border-radius: 6px;
+    background: #1a1a1a;
+    color: #e0e0e0;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.15s, border-color 0.15s, color 0.15s, transform 0.15s;
+}
+
+.option:hover {
+    background: #2a2a2a;
+    border-color: #2ecc71;
+    color: #2ecc71;
+    transform: translateY(-1px);
+}

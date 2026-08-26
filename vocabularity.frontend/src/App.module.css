@@ -1,0 +1,18 @@
+.page {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    overflow: hidden;
+}
+
+.wordsContainer {
+    flex: 1;
+    background: #0d0d0d;
+    overflow-y: auto;
+}
+
+.header {
+    height: 200px;
+    background: #111;
+    flex-shrink: 0;
+}

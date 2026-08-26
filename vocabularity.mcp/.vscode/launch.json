@@ -1,0 +1,23 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Debug MCP Server",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "fastmcp.cli",
+            "python": "${workspaceFolder}\\venv\\Scripts\\python.exe",
+            "args": [
+                "run",
+                "main.py:mcp",
+                "--transport",
+                "http",
+                "--port",
+                "9000"
+            ],
+            "cwd": "${workspaceFolder}",
+            "console": "integratedTerminal",
+            "justMyCode": false
+        }
+    ]
+}

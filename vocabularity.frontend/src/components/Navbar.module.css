@@ -1,0 +1,33 @@
+.container {
+    display: flex;
+    gap: 6px;
+    height: 50px;
+    width: 100%;
+    margin: 10px 20px;
+}
+
+.container a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 20px;
+    height: 100%;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    text-decoration: none;
+    color: #555;
+    background: transparent;
+    transition: background 0.15s, color 0.15s;
+}
+
+.container a:hover {
+    background: #f0f0f0;
+    color: #222;
+}
+
+.container a:global(.active) {
+    background: #e8e8e8;
+    color: #111;
+    font-weight: 600;
+}

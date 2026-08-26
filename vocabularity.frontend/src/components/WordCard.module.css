@@ -1,0 +1,173 @@
+.card {
+    background: #141414;
+    border-radius: 12px;
+    width: 100%;
+    border: 1px solid #262626;
+    transition: border-color 0.2s ease, background 0.2s ease;
+}
+
+.card:hover {
+    border-color: #2ecc71;
+}
+
+.favorited {
+    border-color: #2ecc71;
+    background: #141c16;
+}
+
+.favorited:hover {
+    border-color: #27ae60;
+}
+
+.cardContent {
+    padding: 20px 24px;
+}
+
+.levelBar {
+    display: flex;
+    width: 100%;
+    height: 28px;
+    overflow: hidden;
+    border-radius: 12px 12px 0 0;
+    background: #1a3328;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+    padding: 0 8px;
+}
+
+.levelIndicator {
+    height: 22px;
+    padding: 0 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 700;
+    color: #2ecc71;
+    border-radius: 6px;
+    background: rgba(46, 204, 113, 0.12);
+}
+
+.favoriteButton {
+    background: none;
+    border: none;
+    font-size: 16px;
+    cursor: pointer;
+    color: #555;
+    padding: 0 4px;
+    line-height: 1;
+    transition: color 0.15s, transform 0.15s;
+}
+
+.favoriteButton:hover {
+    color: #2ecc71;
+    transform: scale(1.2);
+}
+
+.favoriteActive {
+    color: #2ecc71;
+}
+
+.favoriteActive:hover {
+    color: #27ae60;
+}
+
+.wordSection {
+    text-align: center;
+    margin-bottom: 12px;
+}
+
+.wordRow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+}
+
+.word {
+    font-size: 24px;
+    font-weight: 700;
+    color: #e0e0e0;
+    margin: 0;
+}
+
+.speakButton {
+    background: #1a1a1a;
+    border: 1px solid #333;
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    font-size: 16px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    color: #2ecc71;
+}
+
+.speakButton:hover {
+    background: #2ecc71;
+    color: #0a0a0a;
+    border-color: #2ecc71;
+}
+
+.speakButton.speaking {
+    background: #2ecc71;
+    color: #0a0a0a;
+}
+
+.transcription {
+    font-size: 14px;
+    color: #777;
+    font-style: italic;
+    margin-top: 6px;
+    display: block;
+}
+
+.translation {
+    font-size: 16px;
+    color: #aaa;
+    text-align: center;
+    margin: 12px 0 16px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid #262626;
+}
+
+.examples {
+    margin-top: 8px;
+}
+
+.examplesTitle {
+    font-size: 12px;
+    font-weight: 600;
+    color: #666;
+    margin: 0 0 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.examples ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.exampleItem {
+    font-size: 14px;
+    color: #999;
+    line-height: 1.5;
+    padding: 6px 0;
+    border-bottom: 1px solid #1f1f1f;
+}
+
+.exampleItem:last-child {
+    border-bottom: none;
+}
+
+.exampleItem::before {
+    content: '💬 ';
+    font-size: 12px;
+    margin-right: 4px;
+}

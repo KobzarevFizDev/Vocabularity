@@ -1,0 +1,3 @@
+from interactors.add_words import AddWordsInteractor
+from interactors.delete_words import DeleteWordsInteractor
+from interactors.list_words import ListWordsInteractor

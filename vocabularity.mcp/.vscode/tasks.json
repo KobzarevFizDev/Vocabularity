@@ -1,0 +1,48 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Run MCP Server",
+            "type": "shell",
+            "command": "${workspaceFolder}\\venv\\Scripts\\fastmcp.exe",
+            "args": [
+                "run",
+                "main.py:mcp",
+                "--transport",
+                "http",
+                "--port",
+                "9000"
+            ],
+            "problemMatcher": [],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "presentation": {
+                "reveal": "always",
+                "panel": "dedicated"
+            }
+        },
+        {
+            "label": "Run Backend",
+            "type": "shell",
+            "command": "${workspaceFolder}\\..\\vocabularity.backend\\venv\\Scripts\\uvicorn.exe",
+            "args": [
+                "main:app",
+                "--host",
+                "127.0.0.1",
+                "--port",
+                "8001",
+                "--reload"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}/../vocabularity.backend"
+            },
+            "problemMatcher": [],
+            "presentation": {
+                "reveal": "always",
+                "panel": "dedicated"
+            }
+        }
+    ]
+}
