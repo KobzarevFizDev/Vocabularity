@@ -22,6 +22,30 @@
             "problemMatcher": []
         },
         {
+            "label": "build migrator (ARM)",
+            "type": "shell",
+            "command": "powershell",
+            "args": [
+                "-ExecutionPolicy",
+                "Bypass",
+                "-File",
+                "${workspaceFolder}/scripts/build_migrator.ps1",
+                "-Target",
+                "arm64",
+                "-Output",
+                "arm64-migrator"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared"
+            },
+            "problemMatcher": []
+        },
+        {
             "label": "run migrator",
             "type": "shell",
             "command": "${workspaceFolder}/migrator/migrator.exe",
