@@ -18,6 +18,8 @@
     line-height: 1.5;
 }
 
+/* ---------- Панель ---------- */
+
 .panel {
     margin-top: 20px;
     border: 1px solid #262626;
@@ -55,6 +57,8 @@
     font-weight: 700;
     margin: 16px 0 12px;
 }
+
+/* ---------- Блоки + − ? ---------- */
 
 .blocks {
     display: grid;
@@ -187,6 +191,21 @@
     border-top: 1px dashed #2a2a2a;
     font-size: 14px;
     color: #c9c9c9;
+}
+
+/* ---------- to be ---------- */
+
+.toBeSection {
+    margin-top: 20px;
+    padding-top: 16px;
+    border-top: 1px solid #262626;
+}
+
+.toBeSectionTitle {
+    font-size: 16px;
+    font-weight: 700;
+    color: #f0b429;
+    margin-bottom: 12px;
 }
 
 /* ---------- Легенда ---------- */

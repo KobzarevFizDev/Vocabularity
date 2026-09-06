@@ -25,13 +25,16 @@ const IHE = "I / He / She / It";
 const IYOU = "I / You / We / They";
 const ALL = "I / He / She / It / You / We / They";
 
-interface Tense {
-    id: string;
-    time: Time;
-    aspect: string;
+interface Forms {
     plus: Block[][];
     minus: Block[][];
     question: Block[][];
+}
+
+interface Tense extends Forms {
+    id: string;
+    time: Time;
+    aspect: string;
 }
 
 const TENSES: Tense[] = [
@@ -220,6 +223,70 @@ const EXAMPLES: Record<string, { plus: string; minus: string; question: string }
     },
 };
 
+/* to be в каждом времени, в том же виде + − ? */
+const TO_BE: Record<string, Forms> = {
+    "present-simple": {
+        plus: [[S(I), BE("am")], [S(HE), BE("is")], [S(YOU), BE("are")]],
+        minus: [[S(I), BE("am"), NOT], [S(HE), BE("is"), NOT], [S(YOU), BE("are"), NOT]],
+        question: [[BE("Am"), S(I), Q], [BE("Is"), S(HE), Q], [BE("Are"), S(YOU), Q]],
+    },
+    "present-continuous": {
+        plus: [[S(I), BE("am"), VERB("V-ing")], [S(HE), BE("is"), VERB("V-ing")], [S(YOU), BE("are"), VERB("V-ing")]],
+        minus: [[S(I), BE("am"), NOT, VERB("V-ing")], [S(HE), BE("is"), NOT, VERB("V-ing")], [S(YOU), BE("are"), NOT, VERB("V-ing")]],
+        question: [[BE("Am"), S(I), VERB("V-ing"), Q], [BE("Is"), S(HE), VERB("V-ing"), Q], [BE("Are"), S(YOU), VERB("V-ing"), Q]],
+    },
+    "present-perfect": {
+        plus: [[S(IYOU), AUX("have"), BE("been")], [S(HE), AUX("has"), BE("been")]],
+        minus: [[S(IYOU), AUX("have"), NOT, BE("been")], [S(HE), AUX("has"), NOT, BE("been")]],
+        question: [[AUX("Have"), S(IYOU), BE("been"), Q], [AUX("Has"), S(HE), BE("been"), Q]],
+    },
+    "present-perfect-continuous": {
+        plus: [[S(IYOU), AUX("have"), BE("been"), VERB("V-ing")], [S(HE), AUX("has"), BE("been"), VERB("V-ing")]],
+        minus: [[S(IYOU), AUX("have"), NOT, BE("been"), VERB("V-ing")], [S(HE), AUX("has"), NOT, BE("been"), VERB("V-ing")]],
+        question: [[AUX("Have"), S(IYOU), BE("been"), VERB("V-ing"), Q], [AUX("Has"), S(HE), BE("been"), VERB("V-ing"), Q]],
+    },
+    "past-simple": {
+        plus: [[S(IHE), BE("was")], [S(YOU), BE("were")]],
+        minus: [[S(IHE), BE("was"), NOT], [S(YOU), BE("were"), NOT]],
+        question: [[BE("Was"), S(IHE), Q], [BE("Were"), S(YOU), Q]],
+    },
+    "past-continuous": {
+        plus: [[S(IHE), BE("was"), VERB("V-ing")], [S(YOU), BE("were"), VERB("V-ing")]],
+        minus: [[S(IHE), BE("was"), NOT, VERB("V-ing")], [S(YOU), BE("were"), NOT, VERB("V-ing")]],
+        question: [[BE("Was"), S(IHE), VERB("V-ing"), Q], [BE("Were"), S(YOU), VERB("V-ing"), Q]],
+    },
+    "past-perfect": {
+        plus: [[S(ALL), AUX("had"), BE("been")]],
+        minus: [[S(ALL), AUX("had"), NOT, BE("been")]],
+        question: [[AUX("Had"), S(ALL), BE("been"), Q]],
+    },
+    "past-perfect-continuous": {
+        plus: [[S(ALL), AUX("had"), BE("been"), VERB("V-ing")]],
+        minus: [[S(ALL), AUX("had"), NOT, BE("been"), VERB("V-ing")]],
+        question: [[AUX("Had"), S(ALL), BE("been"), VERB("V-ing"), Q]],
+    },
+    "future-simple": {
+        plus: [[S(ALL), AUX("will"), BE("be")]],
+        minus: [[S(ALL), AUX("will"), NOT, BE("be")]],
+        question: [[AUX("Will"), S(ALL), BE("be"), Q]],
+    },
+    "future-continuous": {
+        plus: [[S(ALL), AUX("will"), BE("be"), VERB("V-ing")]],
+        minus: [[S(ALL), AUX("will"), NOT, BE("be"), VERB("V-ing")]],
+        question: [[AUX("Will"), S(ALL), BE("be"), VERB("V-ing"), Q]],
+    },
+    "future-perfect": {
+        plus: [[S(ALL), AUX("will"), AUX("have"), BE("been")]],
+        minus: [[S(ALL), AUX("will"), NOT, AUX("have"), BE("been")]],
+        question: [[AUX("Will"), S(ALL), AUX("have"), BE("been"), Q]],
+    },
+    "future-perfect-continuous": {
+        plus: [[S(ALL), AUX("will"), AUX("have"), BE("been"), VERB("V-ing")]],
+        minus: [[S(ALL), AUX("will"), NOT, AUX("have"), BE("been"), VERB("V-ing")]],
+        question: [[AUX("Will"), S(ALL), AUX("have"), BE("been"), VERB("V-ing"), Q]],
+    },
+};
+
 const TENSE_BY_ID = new Map(TENSES.map(t => [t.id, t]));
 const TIME_ORDER: Time[] = ["Present", "Past", "Future"];
 
@@ -253,7 +320,7 @@ export default function TensesPage() {
             <div className={styles.scroll}>
                 <header className={styles.intro}>
                     <h1>Формулы времён</h1>
-                    <p>Выбери время — увидишь, как строятся + − ? для каждой группы местоимений.</p>
+                    <p>Выбери время — увидишь формулу + − ? и формы to be.</p>
                 </header>
 
                 <section className={styles.panel}>
@@ -299,6 +366,32 @@ export default function TensesPage() {
                                 <div className={styles.example}>{EXAMPLES[selected.id][key]}</div>
                             </div>
                         ))}
+                    </div>
+
+                    <div className={styles.toBeSection}>
+                        <div className={styles.toBeSectionTitle}>to be</div>
+                        <div className={styles.blocks}>
+                            {FORMS.map(({ key, sign, label }) => (
+                                <div key={key} className={styles.block}>
+                                    <div className={styles.blockHead}>
+                                        <span className={`${styles.blockSign} ${sign === "+" ? styles.signPlus : sign === "−" ? styles.signMinus : styles.signQues}`}>
+                                            {sign}
+                                        </span>
+                                        <span className={styles.blockLabel}>{label}</span>
+                                    </div>
+                                    {TO_BE[selected.id][key].map((line, i) => (
+                                        <div key={i} className={styles.line}>
+                                            {line.map((block, j) => (
+                                                <span key={j} className={styles.wrap}>
+                                                    {j > 0 && <span className={styles.plus}>+</span>}
+                                                    <span className={`${styles.chip} ${KIND_CLASS[block.kind]}`}>{block.text}</span>
+                                                </span>
+                                            ))}
+                                        </div>
+                                    ))}
+                                </div>
+                            ))}
+                        </div>
                     </div>
                 </section>
 
