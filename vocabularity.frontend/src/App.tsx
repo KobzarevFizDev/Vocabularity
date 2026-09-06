@@ -3,6 +3,7 @@ import Navbar from './components/Navbar'
 import { Route, Routes, useNavigate } from 'react-router'
 import CandidatesPage from './pages/CandidatesPage'
 import DictionaryPage from './pages/DictionaryPage'
+import TensesPage from './pages/TensesPage'
 import StatusPopup from './Popups/StatusPopup'
 import AddToDictionaryPopup from './Popups/AddToDictionaryPopup'
 import { useWebSocket } from './hooks/useWebSocket'
@@ -45,6 +46,7 @@ function App() {
       <Routes>
         <Route path="candidates" element={<CandidatesPage />}></Route>
         <Route path="dictionary" element={<DictionaryPage />}></Route>
+        <Route path="tenses" element={<TensesPage />}></Route>
       </Routes>
       <StatusPopup />
       <AddToDictionaryPopup />

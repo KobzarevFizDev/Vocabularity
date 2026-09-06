@@ -6,6 +6,7 @@ export default function Navbar() {
         <nav className={styles.container}>
             <NavLink to="candidates">Candidates</NavLink>
             <NavLink to="dictionary">Словарь</NavLink>
+            <NavLink to="tenses">Времена</NavLink>
         </nav>
     )
 }
