@@ -1,0 +1,17 @@
+.git/
+.gitignore
+.vscode/
+venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.env
+tests/
+scripts/
+requirements-dev.txt
+Dockerfile
+.dockerignore
+QWEN.md
+README.md
+migrator/migrator.exe
+migrator/migrator-linux-*

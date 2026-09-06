@@ -1,0 +1,89 @@
+# Full-stack local environment for Vocabularity:
+#   db (Postgres) -> migrator (one-shot Go migrations) -> backend (FastAPI :8000)
+#   frontend (nginx :80, published on host :8080, proxies /api and /ws to backend)
+#   mcp (FastMCP :9000, talks to backend)
+#
+#   docker compose up --build
+#   frontend: http://localhost:8080   backend API/docs: http://localhost:8000/docs
+#
+# Единый источник значений — корневой .env (схема в .env.example).
+# Значения ${VAR:-default} переопределяются в .env; дефолты совпадают с
+# дефолтами, зашитыми в код backend, чтобы стек поднимался и без .env.
+# DB_HOST/DB_PORT внутри стека — топология compose (имя сервиса), не конфиг.
+
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-vocabularity}
+      POSTGRES_USER: ${POSTGRES_USER:-vocabularity}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-1234567890}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-vocabularity} -d ${POSTGRES_DB:-vocabularity}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    restart: unless-stopped
+
+  migrator:
+    build: ./vocabularity.backend/migrator
+    environment:
+      DB_HOST: db
+      DB_PORT: "5432"
+      DB_USER: ${POSTGRES_USER:-vocabularity}
+      DB_PASSWORD: ${POSTGRES_PASSWORD:-1234567890}
+      DB_NAME: ${POSTGRES_DB:-vocabularity}
+      MIGRATIONS_DIR: /migrations
+    volumes:
+      - ./vocabularity.backend/migrations:/migrations:ro
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: "no"
+
+  backend:
+    build: ./vocabularity.backend
+    environment:
+      DB_HOST: db
+      DB_PORT: "5432"
+      DB_USER: ${POSTGRES_USER:-vocabularity}
+      DB_PASSWORD: ${POSTGRES_PASSWORD:-1234567890}
+      DB_NAME: ${POSTGRES_DB:-vocabularity}
+      BACKEND_HOST: 0.0.0.0
+      BACKEND_PORT: "8000"
+    ports:
+      - "8000:8000"
+    depends_on:
+      migrator:
+        condition: service_completed_successfully
+    restart: unless-stopped
+
+  frontend:
+    build: ./vocabularity.frontend
+    environment:
+      # nginx envsubst in the frontend image substitutes these
+      BACKEND_HOST: backend
+      BACKEND_PORT: "8000"
+    ports:
+      - "8080:80"
+    depends_on:
+      - backend
+    restart: unless-stopped
+
+  mcp:
+    build: ./vocabularity.mcp
+    environment:
+      MCP_HOST: 0.0.0.0
+      MCP_PORT: "9000"
+      BACKEND_HOST: backend
+      BACKEND_PORT: "8000"
+    ports:
+      - "9000:9000"
+    depends_on:
+      - backend
+    restart: unless-stopped
+
+volumes:
+  pgdata:

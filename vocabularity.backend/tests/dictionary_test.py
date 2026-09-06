@@ -25,55 +25,41 @@ def cleanup():
             session.commit()
 
 
-def test_add_words(cleanup):
-    items = [
-        WordDto(
-            id="00000000-0000-0000-0000-000000000001",
-            word="hello",
-            translation="привет",
-            transcription="həˈloʊ",
-            examples=["Hello, how are you?", "Hello, world!"],
-            level="A1",
-            context_sentence="Hello, it's nice to meet you.",
-        ),
-    ]
+def test_add_words_ignores_client_id_and_generates_own(cleanup):
+    client = TestClient(app)
+    payload = {
+        # произвольная строка клиента — backend не должен требовать uuid и не хранит её
+        "id": "client-side-key-1",
+        "word": "hello",
+        "translation": "привет",
+        "transcription": "həˈloʊ",
+        "examples": ["Hello, how are you?", "Hello, world!"],
+        "level": "A1",
+        "context_sentence": "Hello, it's nice to meet you.",
+    }
+    cleanup.append(payload["word"])
 
-    cleanup.extend(item.word for item in items)
-
-    words = [
-        Word(
-            id=item.id,
-            word=item.word,
-            translation=item.translation,
-            transcription=item.transcription,
-            examples=item.examples,
-            context_sentence=item.context_sentence,
-            level=Level(value=item.level),
-        )
-        for item in items
-    ]
-    ids = [uuid.UUID(item.id) for item in items]
-
-    with Session(engine) as session:
-        interactor = AddWordsInteractor(session)
-        interactor.execute(words, ids)
+    response = client.post("/dictionary/words", json=[payload])
+    assert response.status_code == 200
 
     with Session(engine) as session:
         row = session.execute(
-            text("SELECT word, translation, context_sentence FROM words WHERE word = :word"),
+            text("SELECT id, word, translation, context_sentence FROM words WHERE word = :word"),
             {"word": "hello"},
         ).fetchone()
 
     assert row is not None
+    # id строки сгенерирован сервером и является валидным uuid
+    generated_id = uuid.UUID(str(row.id))
+    assert str(generated_id) != payload["id"]
     assert row.word == "hello"
     assert row.translation == "привет"
     assert row.context_sentence == "Hello, it's nice to meet you."
 
 
 def test_delete_words(cleanup):
-    word_id = "00000000-0000-0000-0000-000000000002"
     item = WordDto(
-        id=word_id,
+        id="client-side-key-2",
         word="delete",
         translation="удалить",
         transcription="dɪˈliːt",
@@ -95,18 +81,24 @@ def test_delete_words(cleanup):
                     level=Level(value=item.level),
                 ),
             ],
-            [uuid.UUID(item.id)],
         )
 
     cleanup.append(item.word)
 
     with Session(engine) as session:
-        DeleteWordsInteractor(session).execute([word_id])
+        row = session.execute(
+            text("SELECT id FROM words WHERE word = :word"),
+            {"word": item.word},
+        ).fetchone()
+        stored_id = str(row.id)
+
+    with Session(engine) as session:
+        DeleteWordsInteractor(session).execute([stored_id])
 
     with Session(engine) as session:
         row = session.execute(
             text("SELECT id FROM words WHERE id = :id"),
-            {"id": word_id},
+            {"id": stored_id},
         ).fetchone()
 
     assert row is None
@@ -115,7 +107,7 @@ def test_delete_words(cleanup):
 def test_add_words_duplicate_returns_400(cleanup):
     client = TestClient(app)
     payload = {
-        "id": "00000000-0000-0000-0000-000000000003",
+        "id": "dup-key-1",
         "word": "duplicate",
         "translation": "дубликат",
         "transcription": "ˈdjuːplɪkət",
@@ -128,7 +120,7 @@ def test_add_words_duplicate_returns_400(cleanup):
     response = client.post("/dictionary/words", json=[payload])
     assert response.status_code == 200
 
-    duplicate = {**payload, "id": "00000000-0000-0000-0000-000000000004"}
+    duplicate = {**payload, "id": "dup-key-2"}
 
     response = client.post("/dictionary/words", json=[duplicate])
     assert response.status_code == 400
@@ -145,7 +137,7 @@ def test_get_words_pagination(cleanup):
     ]
     for index, (word, translation) in enumerate(words):
         payload = {
-            "id": f"00000000-0000-0000-0000-{index + 5:012d}",
+            "id": f"client-key-{index + 5}",
             "word": word,
             "translation": translation,
             "transcription": "",
@@ -168,4 +160,3 @@ def test_get_words_pagination(cleanup):
     second = second_page.json()
     assert second["words"][0]["word"] == "cherry"
     assert second["total"] == initial_total + 3
-

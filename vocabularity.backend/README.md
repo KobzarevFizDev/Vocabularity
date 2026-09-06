@@ -24,3 +24,7 @@
 - Собираем мигратор
 - Упаковываем весь проект в zip архив и переносим архив на ноутбук
 - scp Vocabularity.zip root@192.168.1.10:/root/apps/
+
+## Docker
+
+Пример сборки образа: "docker build -t vocabularity.backend:v0.1 ."

@@ -1,7 +1,6 @@
 ﻿import asyncio
 import json
 import os
-import uuid
 from pathlib import Path
 from typing import Union
 
@@ -76,11 +75,10 @@ def add_words_to_dictionary(items: list[WordDto]):
         )
         for item in items
     ]
-    ids = [uuid.UUID(item.id) for item in items]
     with Session(engine) as session:
         try:
             interactor = AddWordsInteractor(session)
-            interactor.execute(words, ids)
+            interactor.execute(words)
         except ValueError as e:
             raise HTTPException(status_code=400, detail=str(e))
         except IntegrityError:
