@@ -20,3 +20,20 @@
 ## Docker
 
 - docker compose up -d --build frontend Чтобы пересобрать фронтенд
+
+На этом ПК — пересобрать и сохранить всё в один архив:
+
+docker compose build
+docker save -o vocabularity-images.tar vocabularity-backend vocabularity-frontend vocabularity-mcp vocabularity-migrator
+
+Перенести на другой ПК два файла:
+
+- vocabularity-images.tar
+- docker-compose.yml (и при желании .env с паролем БД)
+
+На другом ПК:
+
+docker load -i vocabularity-images.tar
+docker compose up --no-build
+
+--no-build обязателен: исходников там нет, поэтому compose не должен пытаться собирать. Postgres подтянется сам.
